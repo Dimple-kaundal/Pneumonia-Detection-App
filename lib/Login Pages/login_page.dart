@@ -1,59 +1,80 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/authentication/auth_provider.dart';
-import 'package:flutter_application_1/home%20Pages/welcome_page.dart';
+import 'package:flutter_application_1/Login%20Pages/sign_up_.dart';
+import 'package:flutter_application_1/Reusable%20Widget/my_elevated_button.dart';
+import 'package:flutter_application_1/Reusable%20Widget/my_textField.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../authentication/auth_providers.dart';
 
-class LoginPage extends ConsumerStatefulWidget {
-  const LoginPage({super.key});
-
-  @override
-  ConsumerState<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends ConsumerState<LoginPage> {
-  final _emailController = TextEditingController();
-  final _passwordController = TextEditingController();
+class LoginScreen extends ConsumerWidget {
+  const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final auth = ref.watch(authProvider);
+  Widget build(BuildContext context, WidgetRef ref) {
+    final emailController = ref.watch(emailControllerProvider);
+    final passwordController = ref.watch(passwordControllerProvider);
+    final authState = ref.watch(authProvider);
 
     return Scaffold(
       appBar: AppBar(title: const Text("Login")),
       body: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            TextField(
-              controller: _emailController,
-              decoration: const InputDecoration(labelText: "Email"),
-            ),
-            TextField(
-              controller: _passwordController,
-              decoration: const InputDecoration(labelText: "Password"),
-              obscureText: true,
-            ),
-            const SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: () {
-                ref
-                    .read(authProvider.notifier)
-                    .login(_emailController.text, _passwordController.text);
+        padding: const EdgeInsets.all(16),
+        child: Center(
+          child: SizedBox(
+            width: 500,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                CustomTextFormField(
+                  controller: emailController,
+                  label: "Email",
+                ),
+                const SizedBox(height: 12),
+                CustomTextFormField(
+                  controller: passwordController,
+                  label: "Password",
+                  isPassword: true,
+                ),
+                const SizedBox(height: 20),
 
-                if (ref.read(authProvider).isLoggedIn) {
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (_) => WelcomePage()),
-                  );
-                }
-              },
-              child: const Text("Login"),
+                // Use only ONE login button (CustomElevatedButton)
+        CustomElevatedButton(
+  text: authState.isLoading ? "Loading..." : "Login",
+  onPressed: authState.isLoading
+      ? null
+      : () {
+          ref.read(authProvider.notifier).login(
+                emailController.text,
+                passwordController.text,
+              );
+        }, 
+),
+
+
+                if (authState.isLoading) ...[
+                  const SizedBox(height: 10),
+                  const CircularProgressIndicator(),
+                ],
+
+                if (authState.error != null) ...[
+                  const SizedBox(height: 10),
+                  Text(
+                    authState.error!,
+                    style: const TextStyle(color: Colors.red, fontSize: 14),
+                  ),
+                ],
+
+                TextButton(
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const SignupScreen()),
+                    );
+                  },
+                  child: const Text("Don’t have an account? Sign up"),
+                )
+              ],
             ),
-            if (auth.isLoggedIn) ...[
-              const SizedBox(height: 20),
-              Text("Logged in as: ${auth.email}"),
-            ],
-          ],
+          ),
         ),
       ),
     );

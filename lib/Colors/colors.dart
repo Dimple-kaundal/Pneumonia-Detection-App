@@ -11,4 +11,7 @@ class AppColors {
 
   // Color for headings / titles
   static const Color headingColor = Color(0xFF221F1F);
+
+static const Color textColor = Color(0xFFFFFFFF);
+
 }

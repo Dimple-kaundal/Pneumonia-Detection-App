@@ -25,13 +25,10 @@ class WelcomePage extends StatelessWidget {
                 const SizedBox(height: 20),
                 const Text(
                   "My STETHO",
-                  style: TextStyle(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 40),
-            
+
                 /// 👇 Navigates to SignInPage
                 CustomElevatedButton(
                   text: "Login",
@@ -42,7 +39,7 @@ class WelcomePage extends StatelessWidget {
                     );
                   },
                 ),
-                 SizedBox(height: 10,),
+                SizedBox(height: 10),
                 CustomElevatedButton(
                   backgroundColor: Colors.white,
                   textColor: AppColors.buttonColor,
@@ -51,7 +48,7 @@ class WelcomePage extends StatelessWidget {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (_) =>SignupScreen()),
+                      MaterialPageRoute(builder: (_) => SignupScreen()),
                     );
                   },
                 ),

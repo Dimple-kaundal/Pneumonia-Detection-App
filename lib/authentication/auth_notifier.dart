@@ -9,11 +9,7 @@ class AuthNotifier extends StateNotifier<AuthState> {
   // fake database of users
   final Map<String, String> _users = {};
 
-  // Controllers for login form
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  // login method (with auto signup if user doesn't exist)
+  // login method
   Future<void> login(String email, String password) async {
     state = state.copyWith(isLoading: true, error: null);
 
@@ -21,8 +17,13 @@ class AuthNotifier extends StateNotifier<AuthState> {
 
     if (_users.containsKey(email)) {
       if (_users[email] == password) {
-        // success
-        state = state.copyWith(isLoading: false, isLoggedIn: true);
+        // success → set dummy user
+        final dummyUser = User(id: "1", name: "Test User", email: email);
+        state = state.copyWith(
+          isLoading: false,
+          isLoggedIn: true,
+          user: dummyUser,
+        );
       } else {
         // wrong password
         state = state.copyWith(
@@ -44,14 +45,11 @@ class AuthNotifier extends StateNotifier<AuthState> {
     await Future.delayed(const Duration(seconds: 1)); // simulate API delay
 
     _users[email] = password; // save new user
-    state = state.copyWith(isLoading: false, isLoggedIn: true);
+    final dummyUser = User(id: "2", name: "New User", email: email);
+    state = state.copyWith(isLoading: false, isLoggedIn: true, user: dummyUser);
   }
 
   void logout() {
     state = AuthState(); // reset to initial state
   }
 }
-
-// provider
-final authProvider =
-    StateNotifierProvider<AuthNotifier, AuthState>((ref) => AuthNotifier());

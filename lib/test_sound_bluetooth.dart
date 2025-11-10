@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:record/record.dart';
@@ -124,7 +123,7 @@ class _LungRecorderState extends State<LungRecorder> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              _isRecording ? 'Recording...' : 'Idle',
+              _isRecording ? 'Recording...' : '',
               style: const TextStyle(color: Colors.white, fontSize: 18),
             ),
             const SizedBox(height: 40),

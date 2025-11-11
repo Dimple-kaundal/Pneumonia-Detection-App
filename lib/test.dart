@@ -1,266 +1,207 @@
-// import 'dart:async';
-// import 'dart:io';
 // import 'package:flutter/material.dart';
-// import 'package:record/record.dart';
-// import 'package:audioplayers/audioplayers.dart';
-// import 'package:external_path/external_path.dart';
+// import 'package:google_fonts/google_fonts.dart';
 
 // void main() {
 //   runApp(const MaterialApp(
 //     debugShowCheckedModeBanner: false,
-//     home: LungRecorder(),
+//     home: SignUpPage(),
 //   ));
 // }
 
-// class LungRecorder extends StatefulWidget {
-//   const LungRecorder({super.key});
-
-//   @override
-//   State<LungRecorder> createState() => _LungRecorderState();
-// }
-
-// class _LungRecorderState extends State<LungRecorder> {
-//   final _recorder = AudioRecorder();
-//   final _player = AudioPlayer();
-//   bool _isRecording = false;
-//   bool _hasRecorded = false;
-//   double _amplitude = 0;
-//   String? _filePath;
-//   Timer? _levelTimer;
-
-//   /// Start or stop recording toggle
-//   Future<void> _toggleRecording() async {
-//     if (_isRecording) {
-//       await _stopRecording();
-//     } else {
-//       await _startRecording();
-//     }
-//   }
-
-//   Future<void> _startRecording() async {
-//     if (!await _recorder.hasPermission()) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text('Microphone permission denied')),
-//       );
-//       return;
-//     }
-
-//     // File path
-//     final downloadsDir = await ExternalPath.getExternalStoragePublicDirectory(
-//       ExternalPath.DIRECTORY_DOWNLOAD,
-//     );
-//     final timestamp = DateTime.now().millisecondsSinceEpoch;
-//     final path = '$downloadsDir/lung_record_$timestamp.wav';
-//     _filePath = path;
-
-//     debugPrint("🎙️ Saving temporary file to: $path");
-
-//     await _recorder.start(
-//       RecordConfig(
-//         encoder: AudioEncoder.wav,
-//         bitRate: 128000,
-//         sampleRate: 44100,
-//       ),
-//       path: path,
-//     );
-
-//     // Amplitude animation
-//     _levelTimer = Timer.periodic(const Duration(milliseconds: 100), (_) async {
-//       final amp = await _recorder.getAmplitude();
-//       setState(() => _amplitude = amp.current.abs().clamp(0, 100));
-//     });
-
-//     setState(() {
-//       _isRecording = true;
-//       _hasRecorded = false;
-//     });
-
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       const SnackBar(content: Text('Recording started...')),
-//     );
-//   }
-
-//   Future<void> _stopRecording() async {
-//     await _recorder.stop();
-//     _levelTimer?.cancel();
-
-//     setState(() {
-//       _isRecording = false;
-//       _hasRecorded = true;
-//     });
-
-//     debugPrint("✅ Recording completed: $_filePath");
-
-//     _showSaveOrDiscardDialog();
-//   }
-
-//   Future<void> _playRecording() async {
-//     if (_filePath == null || !File(_filePath!).existsSync()) {
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text('No recording found')),
-//       );
-//       return;
-//     }
-
-//     try {
-//       await _player.play(DeviceFileSource(_filePath!));
-//       ScaffoldMessenger.of(context).showSnackBar(
-//         const SnackBar(content: Text('Playing recording...')),
-//       );
-//     } catch (e) {
-//       debugPrint("❌ Error playing file: $e");
-//     }
-//   }
-
-//   void _showSaveOrDiscardDialog() {
-//     showDialog(
-//       context: context,
-//       builder: (context) => AlertDialog(
-//         backgroundColor: Colors.grey[900],
-//         title: const Text(
-//           "Save Recording?",
-//           style: TextStyle(color: Colors.white),
-//         ),
-//         content: const Text(
-//           "Would you like to keep this recording or discard and re-record?",
-//           style: TextStyle(color: Colors.white70),
-//         ),
-//         actions: [
-//           TextButton(
-//             onPressed: () {
-//               _discardRecording();
-//               Navigator.pop(context);
-//             },
-//             child: const Text("Discard", style: TextStyle(color: Colors.redAccent)),
-//           ),
-//           TextButton(
-//             onPressed: () {
-//               _saveRecording();
-//               Navigator.pop(context);
-//             },
-//             child: const Text("Save", style: TextStyle(color: Colors.greenAccent)),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   void _discardRecording() {
-//     if (_filePath != null && File(_filePath!).existsSync()) {
-//       File(_filePath!).deleteSync();
-//     }
-
-//     setState(() {
-//       _filePath = null;
-//       _hasRecorded = false;
-//     });
-
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       const SnackBar(content: Text('Recording discarded.')),
-//     );
-//   }
-
-//   void _saveRecording() {
-//     ScaffoldMessenger.of(context).showSnackBar(
-//       const SnackBar(content: Text('Recording saved in Downloads folder.')),
-//     );
-//   }
-
-//   @override
-//   void dispose() {
-//     _levelTimer?.cancel();
-//     _recorder.dispose();
-//     _player.dispose();
-//     super.dispose();
-//   }
+// class SignUpPage extends StatelessWidget {
+//   const SignUpPage({super.key});
 
 //   @override
 //   Widget build(BuildContext context) {
+//     final Color lightPurple = const Color(0xFFE4E5F9);
+//     final Color buttonColor = const Color(0xFF6C77F4);
+
 //     return Scaffold(
-//       backgroundColor: Colors.black,
-//       appBar: AppBar(
-//         title: const Text('Lung Sound Recorder'),
-//         backgroundColor: Colors.grey[900],
-//         centerTitle: true,
-//       ),
+//       backgroundColor: const Color(0xFFBFC1D9),
 //       body: Center(
-//         child: Column(
-//           mainAxisAlignment: MainAxisAlignment.center,
-//           children: [
-//             // Status text
-//             Text(
-//               _isRecording
-//                   ? 'Recording...'
-//                   : _hasRecorded
-//                       ? 'Recording Complete'
-//                       : 'Idle',
-//               style: const TextStyle(color: Colors.white, fontSize: 18),
-//             ),
-//             const SizedBox(height: 30),
-
-//             // Amplitude visualization
-//             Container(
-//               width: 300,
-//               height: 100,
-//               decoration: BoxDecoration(
-//                 color: Colors.grey.shade900,
-//                 borderRadius: BorderRadius.circular(12),
-//               ),
-//               child: Align(
-//                 alignment: Alignment.bottomCenter,
-//                 child: AnimatedContainer(
-//                   duration: const Duration(milliseconds: 100),
-//                   width: double.infinity,
-//                   height: _isRecording ? _amplitude * 2 : 0,
-//                   color: _isRecording ? Colors.greenAccent : Colors.transparent,
-//                 ),
-//               ),
-//             ),
-//             const SizedBox(height: 40),
-
-//             // Start/Stop Button
-//             ElevatedButton(
-//               style: ElevatedButton.styleFrom(
-//                 backgroundColor:
-//                     _isRecording ? Colors.redAccent : Colors.greenAccent,
-//                 foregroundColor: Colors.black,
-//                 padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
-//               ),
-//               onPressed: _toggleRecording,
-//               child: Text(_isRecording ? 'Stop' : 'Start Recording'),
-//             ),
-//             const SizedBox(height: 20),
-
-//             // Play and Re-record Buttons (only after recording)
-//             if (_hasRecorded) ...[
-//               ElevatedButton.icon(
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: Colors.blueAccent,
-//                   foregroundColor: Colors.white,
-//                   padding:
-//                       const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-//                 ),
-//                 onPressed: _playRecording,
-//                 icon: const Icon(Icons.play_arrow),
-//                 label: const Text('Play Recording'),
-//               ),
-//               const SizedBox(height: 10),
-//               ElevatedButton.icon(
-//                 style: ElevatedButton.styleFrom(
-//                   backgroundColor: Colors.orangeAccent,
-//                   foregroundColor: Colors.black,
-//                   padding:
-//                       const EdgeInsets.symmetric(horizontal: 30, vertical: 15),
-//                 ),
-//                 onPressed: () {
-//                   _discardRecording();
-//                   _startRecording();
-//                 },
-//                 icon: const Icon(Icons.refresh),
-//                 label: const Text('Re-record'),
+//         child: Container(
+//           width: 900,
+//           height: 500,
+//           decoration: BoxDecoration(
+//             color: Colors.white,
+//             borderRadius: BorderRadius.circular(20),
+//             boxShadow: [
+//               BoxShadow(
+//                 color: Colors.black.withOpacity(0.05),
+//                 blurRadius: 10,
+//                 offset: const Offset(0, 5),
 //               ),
 //             ],
-//           ],
+//           ),
+//           child: Row(
+//             children: [
+//               // Left section
+//               Expanded(
+//                 flex: 1,
+//                 child: Container(
+//                   decoration: BoxDecoration(
+//                     color: lightPurple,
+//                     borderRadius: const BorderRadius.only(
+//                       topLeft: Radius.circular(20),
+//                       bottomLeft: Radius.circular(20),
+//                     ),
+//                   ),
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(40),
+//                     child: Column(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: [
+//                         const CircleAvatar(
+//                           radius: 25,
+//                           backgroundColor: Colors.white,
+//                           child: Icon(
+//                             Icons.local_hospital,
+//                             color: Colors.blueAccent,
+//                             size: 30,
+//                           ),
+//                         ),
+//                         const SizedBox(height: 30),
+//                         Text(
+//                           'We at MediCare are\nalways fully focused on\nhelping your child.',
+//                           textAlign: TextAlign.center,
+//                           style: GoogleFonts.poppins(
+//                             fontSize: 16,
+//                             color: Colors.black87,
+//                             height: 1.5,
+//                           ),
+//                         ),
+//                         const SizedBox(height: 30),
+//                         Image.asset(
+//                           'assets/stethoscope.png',
+//                           height: 150,
+//                         ),
+//                       ],
+//                     ),
+//                   ),
+//                 ),
+//               ),
+
+//               // Right section
+//               Expanded(
+//                 flex: 1,
+//                 child: Padding(
+//                   padding:
+//                       const EdgeInsets.symmetric(horizontal: 50, vertical: 40),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Align(
+//                         alignment: Alignment.topRight,
+//                         child: Text(
+//                           "English (US)",
+//                           style: GoogleFonts.poppins(
+//                             fontSize: 13,
+//                             color: Colors.grey[600],
+//                           ),
+//                         ),
+//                       ),
+//                       const SizedBox(height: 20),
+//                       Center(
+//                         child: Text(
+//                           "Create Account",
+//                           style: GoogleFonts.poppins(
+//                             fontSize: 22,
+//                             fontWeight: FontWeight.w600,
+//                           ),
+//                         ),
+//                       ),
+//                       const SizedBox(height: 30),
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.center,
+//                         children: [
+//                           OutlinedButton.icon(
+//                             onPressed: () {},
+//                             icon: Image.asset('assets/google.png', height: 20),
+//                             label: const Text('Sign up with Google'),
+//                           ),
+//                           const SizedBox(width: 15),
+//                           OutlinedButton.icon(
+//                             onPressed: () {},
+//                             icon:
+//                                 Image.asset('assets/facebook.png', height: 20),
+//                             label: const Text('Sign up with Facebook'),
+//                           ),
+//                         ],
+//                       ),
+//                       const SizedBox(height: 20),
+//                       Row(
+//                         children: const [
+//                           Expanded(child: Divider(thickness: 1)),
+//                           Padding(
+//                             padding: EdgeInsets.symmetric(horizontal: 10),
+//                             child: Text("OR"),
+//                           ),
+//                           Expanded(child: Divider(thickness: 1)),
+//                         ],
+//                       ),
+//                       const SizedBox(height: 25),
+//                       TextField(
+//                         decoration: InputDecoration(
+//                           labelText: "Full Name",
+//                           border: OutlineInputBorder(
+//                             borderRadius: BorderRadius.circular(10),
+//                           ),
+//                         ),
+//                       ),
+//                       const SizedBox(height: 15),
+//                       TextField(
+//                         decoration: InputDecoration(
+//                           labelText: "Email",
+//                           border: OutlineInputBorder(
+//                             borderRadius: BorderRadius.circular(10),
+//                           ),
+//                         ),
+//                       ),
+//                       const SizedBox(height: 15),
+//                       TextField(
+//                         obscureText: true,
+//                         decoration: InputDecoration(
+//                           labelText: "Password",
+//                           suffixIcon: const Icon(Icons.visibility_off),
+//                           border: OutlineInputBorder(
+//                             borderRadius: BorderRadius.circular(10),
+//                           ),
+//                         ),
+//                       ),
+//                       const SizedBox(height: 25),
+//                       SizedBox(
+//                         width: double.infinity,
+//                         child: ElevatedButton(
+//                           style: ElevatedButton.styleFrom(
+//                             backgroundColor: buttonColor,
+//                             shape: RoundedRectangleBorder(
+//                               borderRadius: BorderRadius.circular(10),
+//                             ),
+//                             padding: const EdgeInsets.symmetric(vertical: 15),
+//                           ),
+//                           onPressed: () {},
+//                           child: Text(
+//                             "Create Account",
+//                             style: GoogleFonts.poppins(
+//                               color: Colors.white,
+//                               fontWeight: FontWeight.w600,
+//                             ),
+//                           ),
+//                         ),
+//                       ),
+//                       const SizedBox(height: 15),
+//                       Center(
+//                         child: TextButton(
+//                           onPressed: () {},
+//                           child: const Text("Already have an account? Log in"),
+//                         ),
+//                       )
+//                     ],
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
 //         ),
 //       ),
 //     );

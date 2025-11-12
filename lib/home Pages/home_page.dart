@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/AppBar/app_bar.dart';
-import 'package:flutter_application_1/Colors/colors.dart';
 import 'package:flutter_application_1/Login%20Pages/login_page.dart';
 import 'package:flutter_application_1/home%20Pages/welcome_page.dart';
 
@@ -81,8 +79,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  AppBar appbarWidget() {
-    return AppBar(
+  AppBar appbarWidget() => AppBar(
       backgroundColor: Colors.transparent,
       automaticallyImplyLeading: false,
 
@@ -131,7 +128,6 @@ class _HomePageState extends State<HomePage> {
         ),
       ],
     );
-  }
 }
 
 Widget myText(String text) {

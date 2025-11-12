@@ -52,7 +52,6 @@ class SignupScreen extends ConsumerWidget {
                       if (value == null || value.isEmpty) {
                         return "Please select category";
                       }
-                      ;
                       return null;
                     },
                   ),

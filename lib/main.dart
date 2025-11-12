@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/home%20Pages/home_page.dart';
+import 'package:flutter_application_1/home%20Pages/start_ausculation.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -13,6 +14,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(debugShowCheckedModeBanner: false,
-     home: HomePage());
+     home: StartAusculation());
+    // home: OrderStepsPage());
   }
 }
